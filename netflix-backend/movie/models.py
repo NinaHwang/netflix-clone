@@ -4,7 +4,7 @@ from django.db import models
 
 class Video(models.Model):
     name = models.CharField(max_length=200)
-    is_service = models.BooleaField()
+    is_service = models.BooleanField()
     service_date = models.DateField(null=True, auto_now=False)
     poster1 = models.CharField(max_length=500)
     poster2 = models.CharField(max_length=500, null=True)
@@ -23,7 +23,7 @@ class Video(models.Model):
 class Movie(Video):
     duration = models.DurationField()
     preview = models.CharField(max_length=500)
-    link = models.UrlField(max_length=500)
+    link = models.CharField(max_length=500)
 
 
     class Meta:
@@ -40,7 +40,7 @@ class SeriesVideo(models.Model):
     name = models.CharField(max_length=200)
     duration = models.DurationField()
     preview = models.CharField(max_length=500)
-    link = models.UrlField(max_length=500)
+    link = models.CharField(max_length=500)
 
     def __str__(self):
         return self.name
@@ -95,7 +95,7 @@ class Producer(models.Model):
 
 class MovieProducer(models.Model):
     movie = models.ForeignKey(Movie, on_delete=models.CASCADE)
-    producer = models.ForiegnKey(Producer, on_delete=models.CASCADE)
+    producer = models.ForeignKey(Producer, on_delete=models.CASCADE)
     is_actor = models.BooleanField()
 
     def __str__(self):
@@ -107,7 +107,7 @@ class MovieProducer(models.Model):
 
 class SeriesProducer(models.Model):
     series = models.ForeignKey(Series, on_delete=models.CASCADE)
-    producer = models.ForiegnKey(Producer, on_delete=models.CASCADE)
+    producer = models.ForeignKey(Producer, on_delete=models.CASCADE)
     is_actor = models.BooleanField()
 
     def __str__(self):
