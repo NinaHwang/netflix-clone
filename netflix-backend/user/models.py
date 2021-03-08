@@ -45,18 +45,3 @@ class SubUser(models.Model):
         db_table = 'subusers'
 
 
-class UserWatched(models.Model):
-    movie = models.ForeignKey(
-        Movie,
-        null=True,
-        on_delete=models.CASCADE
-    )
-    series = models.ForeignKey(
-        SeriesVideo,
-        null=True,
-        on_delete=models.CASCADE
-    )
-    subuser = models.ForeignKey(SubUser, on_delete=models.CASCADE)
-
-    class Meta:
-        db_table = 'watched_movies'
