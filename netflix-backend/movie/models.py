@@ -37,7 +37,9 @@ class Series(Video):
 
 class SeriesVideo(models.Model):
     series = models.ForeignKey(Series, on_delete=models.CASCADE)
-    name = models.CharField(max_length=200)
+    season = models.IntegerField()
+    episode = models.IntegerField()
+    name = models.CharField(max_length=200, null=True)
     duration = models.DurationField()
     preview = models.CharField(max_length=500)
     link = models.CharField(max_length=500)
