@@ -34,15 +34,15 @@ ALLOWED_HOSTS = []
 
 INSTALLED_APPS = [
     'corsheaders',
-    'django.contrib.admin',
-    'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'user',
     'profileimage',
-    'movie'
+    'movie',
+    'main',
+    'userwatched'
 ]
 
 MIDDLEWARE = [

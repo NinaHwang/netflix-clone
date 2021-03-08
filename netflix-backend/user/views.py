@@ -8,6 +8,13 @@ from django.http import JsonResponse
 from django.views import View
 from django.conf import settings
 
+from .models import (
+    Membership,
+    User,
+    SubUser,
+)
+from profileimage.models import ProfileImage
+
 # Create your views here.
 
 class CheckEmailView(View):
@@ -20,7 +27,7 @@ class CheckEmailView(View):
                 return JsonResponse({'message': 'INVALID_EMAIL'}, status=400)
 
             if User.objects.filter(email=email).first() is None:
-                return JsonResopnse(
+                return JsonResponse(
                     {
                         'message': 'SIGN_UP',
                         'email': email
@@ -47,7 +54,7 @@ class SignUpView(View):
             email = data['email']
             password = bcrypt.hashpw(
                 data['password'].encode('utf-8'),
-                bcypt.gensalt()
+                bcrypt.gensalt()
             ).decode('utf-8')
             membership = Membership.objects.get(id=data['membership'])
 
@@ -108,7 +115,11 @@ class SignInView(View):
                             {
                                 'id': subuser.id,
                                 'name': subuser.name,
-                                'image': subuser.image.image_url
+                                'image': (
+                                    subuser.image.image_url
+                                    if subuser.image is not None
+                                    else None
+                                )
                             } for subuser in user.subuser_set.all()
                         ]
                     }, status=200
@@ -158,7 +169,8 @@ class CreateSubUserView(View):
                 return JsonResponse({'message': 'NO_MORE_USERS'}, status=200)
 
             data = json.loads(request.body)
-            image = ProfileImage.objects.get(id=data['image'])
+            image = (ProfileImage.objects.get(id=data['image'])
+                    if 'image' in data else None)
 
             SubUser.objects.create(
                 user=target,
@@ -176,11 +188,12 @@ class CreateSubUserView(View):
 
 class SubUserSignInView(View):
     @jwt_utils.token
-    def post(self.request):
+    def post(self, request):
         if request.status == 'user':
             target = request.user
         else:
             target = request.user.user
+
 
         data = json.loads(request.body)
 
@@ -205,7 +218,10 @@ class SubUserSignInView(View):
                 'message': 'SUBUSER_SIGNIN',
                 'token': token,
                 'name': subuser.name,
-                'image': subuser.image.image_url
+                'image': (
+                    subuser.image.image_url
+                    if subuser.image is not None else None
+                )
             }, status=200
         )
 

@@ -1,7 +1,7 @@
 from django.db import models
 
 from user.models import SubUser
-from movie.models import Movie, Series
+from movie.models import Movie, SeriesVideo
 
 # Create your models here.
 
