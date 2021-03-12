@@ -8,6 +8,9 @@ from django.http import JsonResponse
 from django.views import View
 from django.conf import settings
 
+from .models import User, SubUser, Membership
+from profileimage.models import ImageCategory, ProfileImage
+
 # Create your views here.
 
 class CheckEmailView(View):
@@ -20,7 +23,7 @@ class CheckEmailView(View):
                 return JsonResponse({'message': 'INVALID_EMAIL'}, status=400)
 
             if User.objects.filter(email=email).first() is None:
-                return JsonResopnse(
+                return JsonResponse(
                     {
                         'message': 'SIGN_UP',
                         'email': email
@@ -37,7 +40,7 @@ class CheckEmailView(View):
         except KeyError as e:
             return JsonResponse({'message': f'KEY_ERROR: {e}'}, status=400)
         except ValueError as e:
-            return JsonResopnse({'message': f'VALUE_ERROR: {e}'}, status=400)
+            return JsonResponse({'message': f'VALUE_ERROR: {e}'}, status=400)
 
 
 class SignUpView(View):
@@ -47,7 +50,7 @@ class SignUpView(View):
             email = data['email']
             password = bcrypt.hashpw(
                 data['password'].encode('utf-8'),
-                bcypt.gensalt()
+                bcrypt.gensalt()
             ).decode('utf-8')
             membership = Membership.objects.get(id=data['membership'])
 
@@ -68,7 +71,7 @@ class SignUpView(View):
         except KeyError as e:
             return JsonResponse({'message': f'KEY_ERROR: {e}'}, status=400)
         except ValueError as e:
-            return JsonResopnse({'message': f'VALUE_ERROR: {e}'}, status=400)
+            return JsonResponse({'message': f'VALUE_ERROR: {e}'}, status=400)
 
 
 class SignInView(View):
@@ -119,7 +122,7 @@ class SignInView(View):
         except KeyError as e:
             return JsonResponse({'message': f'KEY_ERROR: {e}'}, status=400)
         except ValueError as e:
-            return JsonResopnse({'message': f'VALUE_ERROR: {e}'}, status=400)
+            return JsonResponse({'message': f'VALUE_ERROR: {e}'}, status=400)
 
 
 class ShowProfileImagesView(View):
@@ -171,12 +174,12 @@ class CreateSubUserView(View):
         except KeyError as e:
             return JsonResponse({'message': f'KEY_ERROR: {e}'}, status=400)
         except ValueError as e:
-            return JsonResopnse({'message': f'VALUE_ERROR: {e}'}, status=400)
+            return JsonResponse({'message': f'VALUE_ERROR: {e}'}, status=400)
 
 
 class SubUserSignInView(View):
     @jwt_utils.token
-    def post(self.request):
+    def post(self, request):
         if request.status == 'user':
             target = request.user
         else:
