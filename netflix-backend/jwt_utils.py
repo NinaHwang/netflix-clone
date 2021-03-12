@@ -8,6 +8,8 @@ from django.http import JsonResponse
 from django.core.exceptions import ObjectDoesNotExist, ImproperlyConfigured
 from django.conf import settings
 
+from user.models import Subuser, User
+
 def token(func):
     def wrapper(self, request, *args, **kwargs):
         try:
@@ -15,15 +17,15 @@ def token(func):
             key = settings.SECRET_KEY
             algorithm = settings.JWT_ALGORITHM
 
-            if token1 is None:
+            if token is None:
                 return JsonResponse({'message': 'INVALID_TOKEN'}, status=401)
 
             decode = jwt.decode(token, key, algorithm=algorithm)
 
-            if subuser in decode:
+            if 'subuser' in decode:
                 request.status = 'subuser'
                 request.user = Subuser.objects.get(id=decode['subuser'])
-            elif user in decode:
+            elif 'user' in decode:
                 request.status = 'user'
                 request.user = User.objects.get(id=decode['user'])
 
